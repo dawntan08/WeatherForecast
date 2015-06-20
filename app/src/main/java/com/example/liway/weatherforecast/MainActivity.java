@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
     ArrayList<HashMap<String, String>> weatherList;
 
     ListView lv;
-    //TextView myView = (TextView)findViewById(R.id.city);
+    TextView myView;
 
 
     //random comment
@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
         System.out.println("onCreate");
         weatherList = new ArrayList<HashMap<String, String>>();
         lv = (ListView)findViewById(R.id.mylist);
+        myView  = (TextView)findViewById(R.id.city);
 
         new GetWeather().execute();
 
@@ -126,7 +127,7 @@ public class MainActivity extends Activity {
             ListAdapter adapter = new SimpleAdapter(MainActivity.this, weatherList,R.layout.list_layout, new String[] {TAG_DAY, TAG_MIN, TAG_MAX, TAG_NIGHT, TAG_EVE, TAG_MORN}, new int[] {R.id.day, R.id.min, R.id.max, R.id.night, R.id.eve, R.id.morn});
 
             lv.setAdapter(adapter);
-            //myView.setText(name);
+            myView.setText(name);
 
             Log.d("Position: ", "onPostExecute");
         }
