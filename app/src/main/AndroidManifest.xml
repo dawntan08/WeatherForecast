@@ -3,6 +3,7 @@
     package="com.example.liway.weatherforecast" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-sdk android:minSdkVersion="3" />
 
     <application
         android:allowBackup="true"

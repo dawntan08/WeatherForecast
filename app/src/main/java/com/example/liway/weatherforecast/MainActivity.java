@@ -24,6 +24,8 @@ public class MainActivity extends Activity {
 
     private ProgressDialog pDialog;
 
+    String name;
+
     //URL to get weather JSON
     private static String url = "http://api.openweathermap.org/data/2.5/forecast/daily?q=manila";
 
@@ -43,6 +45,7 @@ public class MainActivity extends Activity {
     ArrayList<HashMap<String, String>> weatherList;
 
     ListView lv;
+    //TextView myView = (TextView)findViewById(R.id.city);
 
 
     //random comment
@@ -50,11 +53,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        System.out.println("onCreate");
         weatherList = new ArrayList<HashMap<String, String>>();
-        lv = (ListView)findViewById(R.id.list);
+        lv = (ListView)findViewById(R.id.mylist);
 
         new GetWeather().execute();
+
     }
 
     private class GetWeather extends AsyncTask<Void, Void, Void>{
@@ -65,24 +69,27 @@ public class MainActivity extends Activity {
             pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
+            Log.d("Position: ", "onPreExecute");
         }
 
         protected Void doInBackground(Void... arg0){
             ServiceHandler sh = new ServiceHandler();
             String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
 
+            Log.d("Position: ", "doInBackGround");
             Log.d("Response: ", "> " + jsonStr);
 
             if(jsonStr != null){
                 try{
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject city = jsonObj.getJSONObject("city");
-                    String name = city.getString(TAG_NAME);
+                    name = city.getString(TAG_NAME);
                     String country = city.getString(TAG_COUNTRY);
                     wList = jsonObj.getJSONArray(TAG_LIST);
 
                     for(int i = 0; i < wList.length(); i++){
-                        JSONObject c = wList.getJSONObject(i);
+                        JSONObject b = wList.getJSONObject(i);
+                        JSONObject c = b.getJSONObject("temp");
                         String day = c.getString(TAG_DAY);
                         String min = c.getString(TAG_MIN);
                         String max = c.getString(TAG_MAX);
@@ -100,8 +107,6 @@ public class MainActivity extends Activity {
 
                         weatherList.add(pWeatherList);
                     }
-                    TextView myView = (TextView)findViewById(R.id.city);
-                    myView.setText(name);
                 }
                 catch (JSONException e){
                     e.printStackTrace();
@@ -109,8 +114,6 @@ public class MainActivity extends Activity {
             } else {
                 Log.e("ServiceHandler", "Couldn't get any data from the url");
             }
-
-
 
             return null;
         }
@@ -123,8 +126,9 @@ public class MainActivity extends Activity {
             ListAdapter adapter = new SimpleAdapter(MainActivity.this, weatherList,R.layout.list_layout, new String[] {TAG_DAY, TAG_MIN, TAG_MAX, TAG_NIGHT, TAG_EVE, TAG_MORN}, new int[] {R.id.day, R.id.min, R.id.max, R.id.night, R.id.eve, R.id.morn});
 
             lv.setAdapter(adapter);
+            //myView.setText(name);
 
-
+            Log.d("Position: ", "onPostExecute");
         }
     }
 
