@@ -16,7 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -63,6 +65,7 @@ public class MainActivity extends Activity {
     }
 
     private class GetWeather extends AsyncTask<Void, Void, Void>{
+        private SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
 
         protected void onPreExecute(){
             super.onPreExecute();
@@ -90,6 +93,8 @@ public class MainActivity extends Activity {
 
                     for(int i = 0; i < wList.length(); i++){
                         JSONObject b = wList.getJSONObject(i);
+                        long uDate = b.getLong("dt");
+                        String date = sdf.format(new Date(uDate));
                         JSONObject c = b.getJSONObject("temp");
                         String day = c.getString(TAG_DAY);
                         String min = c.getString(TAG_MIN);
@@ -99,6 +104,7 @@ public class MainActivity extends Activity {
                         String morn = c.getString(TAG_MORN);
 
                         HashMap<String, String> pWeatherList = new HashMap<String, String>();
+                        pWeatherList.put("date", date);
                         pWeatherList.put(TAG_DAY, day);
                         pWeatherList.put(TAG_MIN, min);
                         pWeatherList.put(TAG_MAX, max);
@@ -124,7 +130,7 @@ public class MainActivity extends Activity {
             if(pDialog.isShowing())
                 pDialog.dismiss();
 
-            ListAdapter adapter = new SimpleAdapter(MainActivity.this, weatherList,R.layout.list_layout, new String[] {TAG_DAY, TAG_MIN, TAG_MAX, TAG_NIGHT, TAG_EVE, TAG_MORN}, new int[] {R.id.day, R.id.min, R.id.max, R.id.night, R.id.eve, R.id.morn});
+            ListAdapter adapter = new SimpleAdapter(MainActivity.this, weatherList,R.layout.list_layout, new String[] {"date", TAG_DAY, TAG_MIN, TAG_MAX, TAG_NIGHT, TAG_EVE, TAG_MORN}, new int[] {R.id.date, R.id.day, R.id.min, R.id.max, R.id.night, R.id.eve, R.id.morn});
 
             lv.setAdapter(adapter);
             myView.setText(name);
