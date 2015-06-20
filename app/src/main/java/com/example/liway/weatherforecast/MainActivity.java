@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +53,8 @@ public class MainActivity extends Activity {
 
         weatherList = new ArrayList<HashMap<String, String>>();
         lv = (ListView)findViewById(R.id.list);
+
+        new GetWeather().execute();
     }
 
     private class GetWeather extends AsyncTask<Void, Void, Void>{
@@ -97,6 +100,8 @@ public class MainActivity extends Activity {
 
                         weatherList.add(pWeatherList);
                     }
+                    TextView myView = (TextView)findViewById(R.id.city);
+                    myView.setText(name);
                 }
                 catch (JSONException e){
                     e.printStackTrace();
@@ -104,6 +109,8 @@ public class MainActivity extends Activity {
             } else {
                 Log.e("ServiceHandler", "Couldn't get any data from the url");
             }
+
+
 
             return null;
         }
@@ -116,6 +123,8 @@ public class MainActivity extends Activity {
             ListAdapter adapter = new SimpleAdapter(MainActivity.this, weatherList,R.layout.list_layout, new String[] {TAG_DAY, TAG_MIN, TAG_MAX, TAG_NIGHT, TAG_EVE, TAG_MORN}, new int[] {R.id.day, R.id.min, R.id.max, R.id.night, R.id.eve, R.id.morn});
 
             lv.setAdapter(adapter);
+
+
         }
     }
 
